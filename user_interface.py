@@ -1,6 +1,8 @@
 import xml.etree.ElementTree as ET
 import tkinter as tk
 from tkinter import messagebox
+import argparse
+import os
 
 MAX_NUM_KITS = 5
 
@@ -25,7 +27,7 @@ def submit_kits():
 
     messagebox.showinfo("Success", f"Kits to be mounted: {kits}")
     print(f"Kits: {kits}")  
-    update_uppaal_model(input_file, output_file, kits)
+    update_uppaal_model(args.input_file, args.output_file, kits)
     root.destroy()
     
 
@@ -67,11 +69,20 @@ def create_ui():
     submit_button.grid(row=4, column=0, columnspan=2, pady=10)
 
 if __name__ == "__main__":
-    input_file = "hcl_example.xml" #put yours
-    output_file = "hcl_updated.xml"
+    parser = argparse.ArgumentParser(description="UI for selecting kits for UPPAAL automation.")
+    parser.add_argument("input_file", help="Path to the input XML file.")
+    parser.add_argument("-o", "--output_file", default="updated_automaton.xml",
+                        help="Path to save the updated XML file. Default is 'updated_automaton.xml'.")
+    args = parser.parse_args()
+
+    if not os.path.exists(args.input_file):
+        print(f"Error: Input file '{args.input_file}' does not exist.")
+        exit(1)
 
     root = tk.Tk()
     root.title("Seleção de Kits")
     root.geometry('300x150')
+
+
     create_ui()
     root.mainloop()
