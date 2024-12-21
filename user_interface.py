@@ -7,6 +7,9 @@ import os
 MAX_NUM_KITS = 5
 
 def submit_kits():
+    """
+    function to handle user input and calls update_uppaal_model to generate new xml
+    """        
     icu_kits = icu_entry.get()
     emergency_kits = emergency_entry.get()
     pediatrics_kits = pediatrics_entry.get()
@@ -28,11 +31,14 @@ def submit_kits():
     messagebox.showinfo("Success", f"Kits to be mounted: {kits}")
     print(f"Kits: {kits}")  
     update_uppaal_model(args.input_file, args.output_file, kits)
-    
+    submit_button.config(state=tk.DISABLED)
     download_button.config(state=tk.NORMAL)
     messagebox.showinfo("Success", f"XML updated successfully! Click 'Download' to save this XML and use in UPPAAL.")
 
 def update_uppaal_model(input_xml, output_xml, kit_map_values):
+    """
+    function to receive a xml then generate a new xml with kit_map_values passed
+    """
     tree = ET.parse(input_xml)
     root = tree.getroot()
 
@@ -46,11 +52,13 @@ def update_uppaal_model(input_xml, output_xml, kit_map_values):
                 new_kit_map
             )
         declaration.text = text
-
     tree.write(output_xml, encoding="utf-8", xml_declaration=True)
 
 def create_ui():
-    global icu_entry, emergency_entry, pediatrics_entry, download_button
+    """
+    function to create user interface
+    """    
+    global icu_entry, emergency_entry, pediatrics_entry, download_button, submit_button
 
     tk.Label(root, text="Inform kits for each sector").grid(row=0, column=0, columnspan=2, pady=10)
 
@@ -71,7 +79,11 @@ def create_ui():
 
     download_button = tk.Button(root, text="Download", command=download_xml, state=tk.DISABLED)
     download_button.grid(row=4, column=1, columnspan=2, pady=5, padx=100)
+
 def download_xml():
+    """
+    function to download xml
+    """    
     save_path = filedialog.asksaveasfilename(defaultextension=".xml", filetypes=[("XML files", "*.xml")])
     if save_path:
         with open(args.output_file, "r") as file:
