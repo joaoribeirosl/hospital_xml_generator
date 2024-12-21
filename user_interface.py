@@ -6,26 +6,36 @@ import os
 
 MAX_NUM_KITS = 5
 
-def submit_kits():
+def validate_kits(icu_kits, emergency_kits, pediatrics_kits):
     """
-    function to handle user input and calls update_uppaal_model to generate new xml
-    """        
-    icu_kits = icu_entry.get()
-    emergency_kits = emergency_entry.get()
-    pediatrics_kits = pediatrics_entry.get()
-    
+    Validates the user input for kit selection.
+    """
     if not icu_kits or not emergency_kits or not pediatrics_kits:
         messagebox.showwarning("Warning", "Must fill all fields!")
-        return
-    
-    if (int(icu_kits) + int(emergency_kits) + int(pediatrics_kits)) > MAX_NUM_KITS:
-        messagebox.showwarning("Warning", f"Maximum number of kits cannot exceed {MAX_NUM_KITS}!")
-        return
-        
+        return False
+
     try:
         kits = [int(icu_kits), int(emergency_kits), int(pediatrics_kits)]
     except ValueError:
         messagebox.showerror("Error", "Insert numbers only!")
+        return False
+
+    if sum(kits) > MAX_NUM_KITS:
+        messagebox.showwarning("Warning", f"Maximum number of kits cannot exceed {MAX_NUM_KITS}!")
+        return False
+
+    return kits
+
+def submit_kits():
+    """
+    Handles user input and calls update_uppaal_model to generate a new XML.
+    """
+    icu_kits = icu_entry.get()
+    emergency_kits = emergency_entry.get()
+    pediatrics_kits = pediatrics_entry.get()
+    
+    kits = validate_kits(icu_kits, emergency_kits, pediatrics_kits)
+    if not kits:
         return
 
     messagebox.showinfo("Success", f"Kits to be mounted: {kits}")
@@ -33,7 +43,7 @@ def submit_kits():
     update_uppaal_model(args.input_file, args.output_file, kits)
     submit_button.config(state=tk.DISABLED)
     download_button.config(state=tk.NORMAL)
-    messagebox.showinfo("Success", f"XML updated successfully! Click 'Download' to save this XML and use in UPPAAL.")
+    messagebox.showinfo("Success", "XML updated successfully! Click 'Download' to save this XML and use in UPPAAL.")
 
 def update_uppaal_model(input_xml, output_xml, kit_map_values):
     """
