@@ -8,7 +8,7 @@ broadcast chan robot_assign_task;
 // --- Variables ---
 
 clock elapsed_time;
-int kit_map[3] = {1,1,1};                  // kits to mount in each sector [0] icu, [1] emergency, [2] pediatrics.
+int kit_map[3];                            // kits to mount in each sector [0] icu, [1] emergency, [2] pediatrics.
 int delivery_priority = 0;                 // each sector has his own priority e.g. 0. icu, 1. emergency, 2. pediatrics
 int kits_to_mount;                         // kits to mount for each sector
 
