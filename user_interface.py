@@ -1,8 +1,10 @@
 import xml.etree.ElementTree as ET
-import tkinter as tk
 from tkinter import messagebox, filedialog
+import tkinter as tk
 import argparse
 import os
+
+
 
 MAX_NUM_KITS = 5
 
@@ -47,7 +49,7 @@ def submit_kits():
 
 def update_uppaal_model(input_xml, output_xml, kit_map_values):
     """
-    function to receive a xml then generate a new xml with kit_map_values passed
+    Receive a xml then generate a new xml with kit_map_values passed.
     """
     tree = ET.parse(input_xml)
     root = tree.getroot()
@@ -66,7 +68,7 @@ def update_uppaal_model(input_xml, output_xml, kit_map_values):
 
 def create_ui():
     """
-    function to create user interface
+    Create user interface.
     """    
     global icu_entry, emergency_entry, pediatrics_entry, download_button, submit_button
 
@@ -90,9 +92,15 @@ def create_ui():
     download_button = tk.Button(root, text="Download", command=download_xml, state=tk.DISABLED)
     download_button.grid(row=4, column=1, columnspan=2, pady=5, padx=100)
 
+def bind_submit_event():
+    """
+    Binds the Enter key to the submit function.
+    """
+    root.bind("<Return>", lambda event: submit_kits())
+
 def download_xml():
     """
-    function to download xml
+    Download xml generated.
     """    
     save_path = filedialog.asksaveasfilename(defaultextension=".xml", filetypes=[("XML files", "*.xml")])
     if save_path:
@@ -118,4 +126,5 @@ if __name__ == "__main__":
     root.geometry('300x200')
 
     create_ui()
+    bind_submit_event()
     root.mainloop()
