@@ -7,6 +7,7 @@ import os
 
 
 MAX_NUM_KITS = 5
+generated_xml = False
 
 def validate_kits(icu_kits, emergency_kits, pediatrics_kits):
     """
@@ -32,6 +33,8 @@ def submit_kits():
     """
     Handles user input and calls update_uppaal_model to generate a new XML.
     """
+    global generated_xml
+
     icu_kits = icu_entry.get()
     emergency_kits = emergency_entry.get()
     pediatrics_kits = pediatrics_entry.get()
@@ -45,6 +48,7 @@ def submit_kits():
     update_uppaal_model(args.input_file, args.output_file, kits)
     submit_button.config(state=tk.DISABLED)
     download_button.config(state=tk.NORMAL)
+    generated_xml = True
     messagebox.showinfo("Success", "XML updated successfully! Click 'Download' to save this XML and use in UPPAAL.")
 
 def update_uppaal_model(input_xml, output_xml, kit_map_values):
@@ -96,7 +100,7 @@ def bind_submit_event():
     """
     Binds the Enter key to the submit function.
     """
-    root.bind("<Return>", lambda event: submit_kits())
+    root.bind("<Return>", lambda event: submit_kits() if not generated_xml else '')
 
 def download_xml():
     """
